@@ -5,7 +5,7 @@ class Resource(models.Model):
     url = models.URLField()
     TypeChoices = [ ('pdf', 'PDF'), ('video', 'Vídeo'), ('link','Link') ]
     type = models.CharField(max_length=10, choices=TypeChoices)
-    description = models.TextField() #obligatory field for now, may change later
+    description = models.TextField(blank=True, default='') #obligatory field for now, may change later
     tags = models.JSONField(default=list)
     creation_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now=True)
