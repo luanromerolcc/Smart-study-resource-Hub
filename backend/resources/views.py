@@ -28,36 +28,46 @@ def smart_assist(request):
     if not title or not type:
         return Response({'error:':'title and type are required'}, status=status.HTTP_400_BAD_REQUEST)
     
-    key = os.getenv('APIKey')
+    api_key = os.getenv('APIKey')
+    print(f'API KEY FOUND: {(api_key)}')
     start_time = time.time()
 
     try:
-        response = requests.post(f'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}',
-            headers={'content-type' : 'application/json',},
+        response = requests.post('https://api.groq.com/openai/v1/chat/completions',
+            headers={'Authorization': f'Bearer {api_key}',
+                'content-type' : 'application/json',},
             json={
-                'system_instruction': {
-                    'parts': [{
-                        'text': (
+                'model':'llama-3.3-70b-versatile',
+                'max_tokens': 500,
+                'messages': [
+                    {
+                        'role': 'system',
+                        'content': (
                             'You are a pedagogical assistant for an educational platform. '
                             'When given a resource title and type, respond ONLY with a valid JSON object '
                             'in this exact format, no extra text, no markdown, no backticks: '
                             '{"description": "a helpful 2-3 sentence description for students", '
                             '"tags": ["tag1", "tag2", "tag3"]}'
-                        )}]},
-            'contents' : [{
-                'parts':[{
-                    'text': f'Title: {title}\nType: {type}'
-                }]}]},
+                        )
+                    },
+                    {
+                        'role': 'user',
+                        'content': f'Title: {title}\nType: {type}'
+                    }
+                ]
+            },
         timeout = 30
         )
         latency = round(time.time() - start_time, 2)
         result = response.json()
+        print (f'RESULT: {result}')
 
-        content = result['candidates'][0]['content']['parts'][0]['text']
-        TokenUsage = result.get('usageMetadata', {}).get('promptTokenCount',0)
+        
+        content = result['choices'][0]['message']['content']
+        token_usage = result.get('usage', {}).get('prompt_tokens', 0)
 
         logger.info(
-            f'[AI Request] Title="{title}", TokenUsage={TokenUsage}, Latency={latency}s'
+            f'[AI Request] Title="{title}", TokenUsage={token_usage}, Latency={latency}s'
         )
         parsed = json.loads(content)
         return Response(parsed)
