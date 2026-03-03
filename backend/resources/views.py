@@ -1,4 +1,5 @@
 from .models import Resource
+from .schemas import smartAssistRequest
 from .serializer import ResourceSerializer
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
@@ -23,8 +24,15 @@ def health_check(request):
 
 @api_view(['POST'])
 def smart_assist(request):
-    title = request.data.get('title')
-    type = request.data.get('type')
+    try:
+        payload = smartAssistRequest(**request.data)
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    title = payload.title
+    type = payload.type
     if not title or not type:
         return Response({'error:':'title and type are required'}, status=status.HTTP_400_BAD_REQUEST)
     
