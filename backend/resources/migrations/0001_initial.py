@@ -7,24 +7,37 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Resource',
+            name="Resource",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=100)),
-                ('url', models.URLField()),
-                ('type', models.CharField(choices=[('pdf', 'PDF'), ('video', 'Vídeo'), ('link', 'Link')], max_length=10)),
-                ('description', models.TextField()),
-                ('tags', models.JSONField(default=list)),
-                ('creation_date', models.DateTimeField(auto_now_add=True)),
-                ('update_date', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=100)),
+                ("url", models.URLField()),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[("pdf", "PDF"), ("video", "Vídeo"), ("link", "Link")],
+                        max_length=10,
+                    ),
+                ),
+                ("description", models.TextField()),
+                ("tags", models.JSONField(default=list)),
+                ("creation_date", models.DateTimeField(auto_now_add=True)),
+                ("update_date", models.DateTimeField(auto_now=True)),
             ],
             options={
-                'ordering': ['-creation_date'],
+                "ordering": ["-creation_date"],
             },
         ),
     ]
