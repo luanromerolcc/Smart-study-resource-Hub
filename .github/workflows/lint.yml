@@ -13,8 +13,8 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install flake8
-        run: pip install flake8
+      - name: Install flake8 and black
+        run: pip install flake8 black
 
       - name: Run flake8
         run: flake8 backend/ --max-line-length=120 --exclude=backend/venv,backend/migrations
