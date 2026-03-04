@@ -20,7 +20,7 @@ function ResourceList({ onAddNew, onEdit }) {
     try {
       const response = await getResources(page)
       setResources(response.data.results)
-      setTotalPages(Math.ceil(response.data.count / 10))
+      setTotalPages(Math.ceil(response.data.count / 12))
     } catch (err) {
       setError('Failed to load resources. Is the backend running?')
     } finally {

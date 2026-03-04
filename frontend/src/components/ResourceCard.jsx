@@ -1,4 +1,3 @@
-
 const TYPE_ICONS = {
   video: '🎬',
   pdf: '📄',
@@ -17,6 +16,7 @@ function ResourceCard({ resource, onEdit, onDelete }) {
       gap: '10px',
       boxShadow: 'var(--shadow)',
       transition: 'var(--transition)',
+      height: '280px', 
     }}
       onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.12)'}
       onMouseLeave={e => e.currentTarget.style.boxShadow = 'var(--shadow)'}
