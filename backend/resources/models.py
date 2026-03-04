@@ -9,9 +9,7 @@ class Resource(models.Model):
     description = models.TextField(blank=True, default="")
     tags = models.JSONField(default=list)
     creation_date = models.DateTimeField(auto_now_add=True)  # dates added for ordering
-    update_date = models.DateTimeField(
-        auto_now=True
-    )
+    update_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
