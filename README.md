@@ -53,31 +53,79 @@ Aplicação Fullstack para gerenciamento de materiais didáticos. Permite o cada
 
 1. Instale as dependências:
    ```bash
+   cd backend
    pip install -r requirements.txt
    ```
-2. Configure o arquivo `.env` com sua chave de API(groq): 
+
+2. Configure o arquivo `.env` (use `.env.example` como referência):
+   ```bash
+   cp .env.example .env
    ```
-   APIKey=suachaveaqui
+   Edite `.env` com suas credenciais:
    ```
+   SecretKey=sua-chave-secreta
+   Debug=True
+   APIKey=sua-chave-groq-aqui
+   ```
+
 3. Execute as migrações:
    ```bash
    python manage.py migrate
    ```
+
 4. Inicie o servidor:
    ```bash
    python manage.py runserver
    ```
+   Backend estará em `http://localhost:8000`
 
 ### Frontend
 
 1. Instale as dependências:
    ```bash
+   cd frontend
    npm install
    ```
-2. Inicie o servidor de desenvolvimento:
+
+2. (Opcional) Configure o arquivo `.env` se usar servidor backend diferente:
+   ```bash
+   cp .env.example .env.local
+   ```
+   Edite `.env.local`:
+   ```
+   VITE_API_BASE_URL=http://localhost:8000/api
+   ```
+
+3. Inicie o servidor de desenvolvimento:
    ```bash
    npm run dev
    ```
+   Frontend estará em `http://localhost:5173`
+
+---
+
+## Desenvolvimento & Qualidade
+
+### Linting
+
+Executar verificações de código:
+
+```bash
+# Backend
+flake8 backend/ --max-line-length=120 --exclude=backend/venv,backend/migrations
+black --check backend/
+
+# Frontend
+cd frontend
+npm run lint
+```
+
+### Health Check
+
+Verificar se o backend está rodando:
+```bash
+curl http://localhost:8000/api/health/
+```
 
 ---
 
@@ -98,9 +146,14 @@ project/
 
 ## Observações
 
-- As chaves de API nunca devem ser versionadas. Use sempre o arquivo `.env` e mantenha-o no `.gitignore`.
-- Caso não tenha acesso a uma API paga de IA, é possível simular a resposta com um mock.
-- O projeto está pronto para integração contínua (CI) e pode ser facilmente adaptado para outros bancos de dados.
+- **Segurança**: As chaves de API nunca devem ser versionadas. Use os arquivos `.env.example` como template e mantenha `.env` no `.gitignore`.
+- **Configuração do Frontend**: Por padrão, a API base é `http://localhost:8000/api`. Use `.env.local` para sobrescrever durante desenvolvimento.
+- **Timeout da IA**: O timeout está configurado com 5s para conexão e 30s para leitura, balanceando responsividade com tempo de processamento da IA.
+- **Tratamento de Erros**: O backend fornece mensagens de erro específicas (timeout, rede, formato inválido) para melhor debugging.
+- **Logging**: Logs estruturados das requisições à IA incluem token usage e latência em segundos.
+- **CI/CD**: Pipeline GitHub Actions configurado com linting (flake8, black para Python; ESLint para JavaScript).
+- **Banco de Dados**: Pronto para ser adaptado para PostgreSQL ou MySQL em produção.
+- **Simulação**: Se não tiver acesso a API paga de IA, é possível simular a resposta com um mock.
 
 ---
 
