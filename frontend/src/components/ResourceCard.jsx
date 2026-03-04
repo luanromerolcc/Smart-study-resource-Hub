@@ -6,21 +6,37 @@ const TYPE_ICONS = {
 
 function ResourceCard({ resource, onEdit, onDelete }) {
   return (
-    <div style={{
-      background: 'var(--surface)',
-      border: '1px solid var(--border)',
-      borderRadius: 'var(--radius)',
-      padding: '20px',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '10px',
-      boxShadow: 'var(--shadow)',
-      transition: 'var(--transition)',
-      height: '280px', 
-    }}
-      onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.12)'}
-      onMouseLeave={e => e.currentTarget.style.boxShadow = 'var(--shadow)'}
-    >
+    <>
+      <style>{`
+        .resource-description::-webkit-scrollbar {
+          width: 6px;
+        }
+        .resource-description::-webkit-scrollbar-button {
+          display: none;
+        }
+        .resource-description::-webkit-scrollbar-thumb {
+          background: var(--text-muted);
+          border-radius: 3px;
+        }
+        .resource-description::-webkit-scrollbar-thumb:hover {
+          background: var(--text);
+        }
+      `}</style>
+      <div style={{
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius)',
+        padding: '20px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
+        boxShadow: 'var(--shadow)',
+        transition: 'var(--transition)',
+        height: '280px', 
+      }}
+        onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.12)'}
+        onMouseLeave={e => e.currentTarget.style.boxShadow = 'var(--shadow)'}
+      >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span style={{
           background: 'var(--surface2)',
@@ -76,17 +92,16 @@ function ResourceCard({ resource, onEdit, onDelete }) {
       </h3>
 
       {/* description */}
-      <p style={{
+      <div className="resource-description" style={{
         fontSize: '13px',
         color: 'var(--text-muted)',
         lineHeight: '1.5',
-        display: '-webkit-box',
-        WebkitLineClamp: 3,
-        WebkitBoxOrient: 'vertical',
-        overflow: 'hidden',
+        maxHeight: '80px',
+        overflowY: 'auto',
+        paddingRight: '8px',
       }}>
         {resource.description || 'No description provided.'}
-      </p>
+      </div>
 
       {/* tags */}
       {resource.tags && resource.tags.length > 0 && (
@@ -118,7 +133,8 @@ function ResourceCard({ resource, onEdit, onDelete }) {
       }}>
         🔗 {resource.url}
       </a>
-    </div>
+      </div>
+    </>
   )
 }
 
