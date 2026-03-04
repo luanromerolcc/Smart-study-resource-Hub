@@ -37,7 +37,7 @@ def smart_assist(request):
         return Response({'error:':'title and type are required'}, status=status.HTTP_400_BAD_REQUEST)
     
     api_key = os.getenv('APIKey')
-    print(f'API KEY FOUND: {(api_key)}')
+    #print(f'API KEY FOUND: {(api_key)}')
     start_time = time.time()
 
     #try except loop in case groq doesnt respond correctly
@@ -69,7 +69,7 @@ def smart_assist(request):
         )
         latency = round(time.time() - start_time, 2)
         result = response.json()
-        print (f'RESULT: {result}')#debug print to check what groq sent back
+        #print (f'RESULT: {result}')#debug print to check what groq sent back
 
         
         content = result['choices'][0]['message']['content']
