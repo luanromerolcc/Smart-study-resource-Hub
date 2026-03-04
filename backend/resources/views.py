@@ -40,10 +40,10 @@ def smart_assist(request):
         )
 
     api_key = os.getenv("APIKey")
-    # print(f'API KEY FOUND: {(api_key)}')
     start_time = time.time()
 
-    # try except loop in case groq doesnt respond correctly
+    # Request to Groq API with timeout: 5s connect, 30s read
+    # This ensures we don't hang on slower connections while allowing LLM processing time
     try:
         response = requests.post(
             "https://api.groq.com/openai/v1/chat/completions",
@@ -68,11 +68,10 @@ def smart_assist(request):
                     {"role": "user", "content": f"Title: {title}\nType: {type}"},
                 ],
             },
-            timeout=30,
+            timeout=(5, 30),
         )
         latency = round(time.time() - start_time, 2)
         result = response.json()
-        # print (f'RESULT: {result}')#debug print to check what groq sent back
 
         content = result["choices"][0]["message"]["content"]
         token_usage = result.get("usage", {}).get("prompt_tokens", 0)
@@ -82,9 +81,27 @@ def smart_assist(request):
         )
         parsed = json.loads(content)
         return Response(parsed)
-    except Exception as e:
-        logger.error(f"[AI error] {str(e)}")
+    except requests.exceptions.Timeout:
+        logger.error("[AI error] Request timeout - Groq API took too long to respond")
         return Response(
-            {"error": "Ai service failure. Try again"},
+            {"error": "AI service is slow. Please try again in a moment."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+    except requests.exceptions.RequestException as e:
+        logger.error(f"[AI error] Network request failed: {str(e)}")
+        return Response(
+            {"error": "Network error connecting to AI service. Check your connection."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+    except (json.JSONDecodeError, KeyError) as e:
+        logger.error(f"[AI error] Invalid API response format: {str(e)}")
+        return Response(
+            {"error": "AI service returned invalid response. Please try again."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+    except Exception as e:
+        logger.error(f"[AI error] Unexpected error: {str(e)}")
+        return Response(
+            {"error": "An unexpected error occurred. Please try again."},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
