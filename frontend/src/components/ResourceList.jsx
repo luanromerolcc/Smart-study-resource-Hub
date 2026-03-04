@@ -21,7 +21,7 @@ function ResourceList({ onAddNew, onEdit }) {
       const response = await getResources(page)
       setResources(response.data.results)
       setTotalPages(Math.ceil(response.data.count / 12))
-    } catch (err) {
+    } catch {
       setError('Failed to load resources. Is the backend running?')
     } finally {
       setLoading(false)
@@ -33,7 +33,7 @@ function ResourceList({ onAddNew, onEdit }) {
     try {
       await deleteResource(id)
       fetchResources(currentPage)
-    } catch (err) {
+    } catch {
       setError('Failed to delete resource.')
     }
   }

@@ -34,7 +34,7 @@ function ResourceForm({ resource, onSave, onCancel }) {
       const response = await smartAssist({ title, type })
       setDescription(response.data.description)
       setTags(response.data.tags.join(', '))
-    } catch (err) {
+    } catch {
       setAiError('Smart Assist failed. Please try again or fill in manually.')
     } finally {
       setAiLoading(false)
@@ -50,7 +50,6 @@ function ResourceForm({ resource, onSave, onCancel }) {
     setSaving(true)
     setError(null)
 
-
     const tagsArray = tags
       .split(',')
       .map(t => t.trim())
@@ -65,7 +64,7 @@ function ResourceForm({ resource, onSave, onCancel }) {
         await createResource(data)
       }
       onSave()
-    } catch (err) {
+    } catch {
       setError('Failed to save resource. Please check all fields.')
     } finally {
       setSaving(false)
