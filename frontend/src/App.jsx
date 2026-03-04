@@ -1,33 +1,56 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import ResourceList from './components/ResourceList'
+import ResourceForm from './components/ResourceForm'
 
 function App() {
-  const [count, setCount] = useState(0)
+  // controls whether the form modal is open
+  const [showForm, setShowForm] = useState(false)
+  // stores the resource being edited, null means we are creating a new one
+  const [editingResource, setEditingResource] = useState(null)
+  // used to force ResourceList to refresh after a save
+  const [refreshKey, setRefreshKey] = useState(0)
+
+  const handleAddNew = () => {
+    // clear any editing resource and open the form
+    setEditingResource(null)
+    setShowForm(true)
+  }
+
+  const handleEdit = (resource) => {
+    // set the resource to edit and open the form
+    setEditingResource(resource)
+    setShowForm(true)
+  }
+
+  const handleSave = () => {
+    // close the form and trigger a list refresh
+    setShowForm(false)
+    setEditingResource(null)
+    setRefreshKey(k => k + 1)
+  }
+
+  const handleCancel = () => {
+    setShowForm(false)
+    setEditingResource(null)
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      {/* pass refreshKey so ResourceList re-fetches when it changes */}
+      <ResourceList
+        key={refreshKey}
+        onAddNew={handleAddNew}
+        onEdit={handleEdit}
+      />
+
+      {/* only render the form modal when showForm is true */}
+      {showForm && (
+        <ResourceForm
+          resource={editingResource}
+          onSave={handleSave}
+          onCancel={handleCancel}
+        />
+      )}
     </>
   )
 }

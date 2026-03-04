@@ -6,7 +6,7 @@ const api = axios.create({
 
 //get all resources
 export const getResources = (page = 1) =>
-    api.get(`/resources/${id}/`)
+    api.get(`/resources/?page=${page}`)
 
 //get single resource
 export const getResource = (id) =>
